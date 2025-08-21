@@ -1,0 +1,30 @@
+[project]
+name = "leap-hpo"
+version = "0.1.0"
+description = "LEAP: LLM-Enhanced Automated Phenotyping"
+authors = [
+    { name = "Jihao Cai", email = "caijh09@gmail.com" },
+    { name = "Zefu Chen", email = "jeffchenmed@gmail.com" },
+    { name = "Guozhuang Li", email = "LGZ6436@163.com" },
+]
+readme = "README.md"
+requires-python = ">=3.12.0"
+license = { text = "MIT" }
+
+dependencies = [
+    "openai==1.99.3",
+    "sentence-transformers==3.3.1",
+    "torch==2.5.1",
+    "numpy==2.2.0",
+    "pandas==2.2.3",
+    "scikit-learn==1.6.0",
+    "pronto==2.5.8",
+    "tqdm==4.67.1",
+    "networkx==3.4.2",
+    "pydantic==2.10.3",
+    "requests==2.32.3",
+    "platformdirs==4.3.8"
+]
+
+[project.urls]
+Homepage = "https://github.com/marker0707/leap"

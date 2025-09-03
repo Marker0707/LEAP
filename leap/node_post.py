@@ -5,24 +5,29 @@ from pronto import Ontology
 import functools
 
 from .utils import get_default_save_path
-from .config import load_config
 
-# 全局变量用于缓存图和配置
+
+# 全局变量用于缓存图
 _G = None
-_config = None
+_save_path = ""
+_hp_obo_path = ""
 
-def get_config():
-    """ 懒加载配置 """
-    global _config
-    if _config is None:
-        _config = load_config()
-    return _config
+def set_config(save_path: str, hp_obo_path: str):
+    """ 设置配置参数 """
+    global _save_path, _hp_obo_path, _G
+    _save_path = save_path
+    _hp_obo_path = hp_obo_path
+    # 重置图缓存，因为路径可能变化
+    _G = None
+
 
 # HPO图构建函数
 def hpo_obo_extraction():
     """ 从HPO OBO文件中提取HPO节点间的关系，创建edge对 """
-    config = get_config()
-    hpo_root = Ontology(config["HP_OBO_PATH"])["HP:0000118"]
+    hp_obo_path = _hp_obo_path
+    if not hp_obo_path:
+        raise ValueError("HP_OBO_PATH not configured. Please call set_config() first.")
+    hpo_root = Ontology(hp_obo_path)["HP:0000118"]
     edge_list = []
     def generate_hpo_edges(hpo_node):
         if hpo_node.subclasses(distance=1, with_self=False) != []:
@@ -42,8 +47,7 @@ def get_hpo_graph():
     """ 懒加载HPO图 """
     global _G
     if _G is None:
-        config = get_config()
-        savepath = config["SAVE_PATH"] or get_default_save_path()
+        savepath = _save_path
         file_path = os.path.join(savepath, "hpo_nxgraph.pkl")
         
         if os.path.isfile(file_path):

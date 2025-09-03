@@ -1,12 +1,15 @@
 import requests
 from io import StringIO
 import pandas as pd
-import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional
 
-logger = logging.getLogger(name = __file__)
+from .logging_utils import get_logger
+
+
+# Logging
+logger = get_logger(__name__)
 
 # TODO 后期可以加个handler根据输入的软件种类自动选择对象，删掉core中的for loop
 
@@ -34,7 +37,7 @@ class GeneRankResult:
 
 class GeneRank(ABC):
     @abstractmethod
-    def rank_gene(self, hpo_list: List[str], weight_list: Optional[List[float]] = None) -> pd.DataFrame:
+    def rank_gene(self, hpo_list: List[str], weight_list: Optional[List[float]] = None) -> GeneRankResult:
         pass
 
 

@@ -1,6 +1,9 @@
 import os
 from platformdirs import user_cache_dir
 import json
+from .logging_utils import get_logger
+
+logger = get_logger(__name__)
 
 def get_default_save_path() -> str:
     """
@@ -13,7 +16,7 @@ def get_default_save_path() -> str:
 
 
 def check_hpo_matrix(path, model, hpo_obo_path):
-    matrix_path = os.path.join(path, '2_hpo_embeddings_matrix.pkl')
+    matrix_path = os.path.join(path, 'hpo_embeddings_matrix.pkl')
     info_path = os.path.join(path, 'database_info.json')
     if os.path.exists(matrix_path) and os.path.exists(info_path):
         with open(info_path, "r") as f:
@@ -24,3 +27,33 @@ def check_hpo_matrix(path, model, hpo_obo_path):
             return False
     else:
         return False
+
+
+def validate_save_path(path: str | None) -> bool:
+    """
+    Validate whether the given save path is usable.
+    """
+    # 判断是否是“”（默认值）
+    if path == "":
+        return False
+    
+    try:
+        directory = os.path.abspath(path)
+    except:
+        logger.warning("Failed to get absolute save path.")
+        return False
+
+    # Check if directory exists
+    if not os.path.exists(directory):
+        try:
+            os.makedirs(directory, exist_ok=True)
+        except OSError as e:
+            logger.warning(f"Failed to create directory: {e}")
+            return False
+
+    # Check if directory is writable
+    if not os.access(directory, os.W_OK):
+        print("Directory is not writable.")
+        return False
+
+    return True

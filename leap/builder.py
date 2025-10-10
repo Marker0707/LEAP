@@ -166,7 +166,7 @@ class ST_Builder():
             embeddings = self.Model.encode(
                 texts, 
                 batch_size=batch_size, 
-                show_progress_bar=True, 
+                show_progress_bar=False, 
                 convert_to_tensor=True
             )
             logger.info(f"Generated embeddings with shape: {embeddings.shape}")

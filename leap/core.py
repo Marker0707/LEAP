@@ -69,7 +69,7 @@ class LEAP:
         query_list: List[str],
         top_k: int
         ):
-        query_embedding = self.Model.encode(query_list, convert_to_tensor=True)
+        query_embedding = self.Model.encode(query_list, convert_to_tensor=True, show_progress_bar=False)
         hits = util.semantic_search(query_embedding, self.HPO_MATRIX["embeddings"], top_k=top_k)
         return hits
 
@@ -85,7 +85,11 @@ class LEAP:
         single query
         """
         ranked_result = rerank_model.rank(
-            query, [answer_text[i["corpus_id"]] for i in hit], return_documents=True, top_k=5 
+            query, 
+            [answer_text[i["corpus_id"]] for i in hit], 
+            return_documents=True, 
+            top_k=5 , 
+            show_progress_bar=False
         )
         return ranked_result
 
@@ -274,7 +278,7 @@ class LEAP:
     def convert_ehr(
         self,
         content: str,
-        rerank_model_name: str,
+        rerank_model_name: Optional[str],
         rerank: bool = False,
         furthest: bool = True,
         use_weighting: bool = False,
@@ -288,6 +292,7 @@ class LEAP:
         
         try:
             if rerank:
+                assert rerank_model_name is not None, "When setting rerank=True, rerank_model_name must be provided."
                 return self._phrase2hpo_rerank(
                     gpt_out = gpt_out,
                     content = content,

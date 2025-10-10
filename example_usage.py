@@ -46,6 +46,7 @@ Hormonal evaluation: Growth hormone deficiency, hypogonadism (low testosterone).
 
 Other labs: Normal thyroid function, fasting glucose slightly elevated.
 """
+content = "headache"
 
 obj = leap.LEAP(
     model="../phenolink_eval/models/sentence-transformers-all-MiniLM-L12-v2-2025-03-26_21-10-23/final",
@@ -55,11 +56,12 @@ obj = leap.LEAP(
 
 
 result = obj.convert_ehr(
-    content=content,
-    rerank=True,
+    content="headache",
+    rerank=False,
     rerank_model_name="cross-encoder/ms-marco-MiniLM-L6-v2",
     furthest=True,
     use_weighting=False,
     retrieve_cutoff=0.7,
     rerank_cutoff=0.1
 )
+print(result.final_leap_result)
